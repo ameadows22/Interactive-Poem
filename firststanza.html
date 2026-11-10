@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Poem</title>
+
+<style>
+  body {
+    background-color: #817676;
+    text-align: center;
+    font-family: 'American Typewriter', serif;
+    font-size: 20px;
+    font-weight: 350;
+    color: white;
+  }
+  
+  .poem-container {
+    position: relative;
+    z-index: 10;
+    padding: 40px;
+    transition: opacity 1.5s ease, filter 1.5s ease, transform 1.5s ease;
+  }
+
+  .poem-container.disintegrate {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.03);
+  }
+
+  p {
+    z-index: 10; 
+    color: #ffffff;
+    max-width: 600px;
+    margin: 40px auto;
+    line-height: 2;
+    letter-spacing: 0.1em;
+  }
+
+  button {
+    z-index: 10;
+    background-color: #817676;
+    color: #fffefe;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+  }
+
+  #back-btn {
+    z-index: 10;
+    display: none;
+    margin: 30px auto;
+    transition: opacity 1.5s ease;
+  }
+</style>
+
+<div id="fade-overlay"></div>
+
+<style>
+  #fade-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    opacity: 0;
+    pointer-events: none; 
+    z-index: -1;
+    transition: opacity 50s linear;
+  }
+</style>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const overlay = document.getElementById('fade-overlay');
+    let opacity = 0;
+
+    const interval = setInterval(() => {
+      opacity += 0.05;
+      if (opacity >= 1) {
+        opacity = 1;
+        clearInterval(interval);
+      }
+      overlay.style.opacity = opacity;
+    }, 50);
+  });
+
+  function disintegrate() {
+    const container = document.getElementById('poem-wrapper');
+    container.classList.add('disintegrate');
+
+    setTimeout(() => {
+      window.location.href = 'end.html';
+    }, 1500);
+  }
+</script>
+
+  <script>
+    const phrases = [
+      "Five of us under one single dome,", 
+      "Laughter echoed inside our shared home.",
+      "Just endless talks where our spirits could roam.",
+      "High ceilings reached up toward the sky,",
+      "Creaking floors sang a quiet lullaby.",
+      "Thrifted treasures filled up every space,",
+      "We had eighties wallpaper that covered the entire place.",
+      "Dinner shared as the shadows grew long,",
+      "Mom cooked meals where we all felt we belonged,",
+      "Every holiday, we gathered right here,",
+      "Just five together, who love each other dear.",
+      "Late night talks held a powerful thrall,",
+      "Listening close to the words of us all.",
+      "Though the five of us can't stay the same,",
+      "Rest in peace to the fifth's quiet name.",
+      "These old memories will never depart,",
+      "Etched forever right here in my heart."
+    ];
+
+    let clickCount = 0;
+    let isTyping = false;
+
+    async function typePhrase(phrase, element) {
+      isTyping = true;
+      
+      const typeAudio = document.getElementById('typewriter-audio');
+      if (typeAudio) {
+        typeAudio.currentTime = 0;
+        typeAudio.play().catch(e => console.log("Audio play blocked/errored:", e));
+      }
+
+      const lineSpan = document.createElement("span");
+      element.appendChild(lineSpan);
+
+      for (let i = 0; i < phrase.length; i++) {
+        lineSpan.innerHTML += phrase.charAt(i);
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+
+      if (typeAudio) {
+        typeAudio.pause();
+      }
+
+      element.appendChild(document.createElement("br"));
+
+      isTyping = false;
+    }
+
+    function changeOnMultiClick() {
+      if (isTyping) return;
+      
+      const demoElement = document.getElementById("demo");
+      const nextButton = document.getElementById("next-btn");
+      const backButton = document.getElementById("back-btn");
+
+      if (clickCount === 0) {
+        demoElement.innerHTML = "";
+      }
+
+      if (clickCount === 3 || clickCount === 7 || clickCount === 11 || clickCount === 15) {
+        demoElement.appendChild(document.createElement("br"));
+      }
+
+      typePhrase(phrases[clickCount], demoElement);
+      
+      clickCount++;
+      
+      if (clickCount >= phrases.length) {
+        nextButton.style.display = "none";   
+        backButton.style.display = "inline-block"; 
+      }
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === ' ') {
+        const nextButton = document.getElementById('next-btn');
+        const backButton = document.getElementById('back-btn');
+
+        if (nextButton && nextButton.style.display !== 'none') {
+          nextButton.click();
+        } else if (backButton && backButton.style.display !== 'none') {
+          backButton.click();
+        }
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <div class="poem-container" id="poem-wrapper">
+    <p id="demo"></p>
+
+    <audio src="audio/solarflex-ambient-ambient-music-569592.mp3" autoplay></audio>
+    <audio id="typewriter-audio" src="audio/typingaudio.mp3" preload="auto" loop></audio>
+
+    <button id="next-btn" type="button" onclick="changeOnMultiClick()"></button>
+    <button style="color: #ffffff;" id="back-btn" type="button" onclick="disintegrate()"></button>
+  </div>
+</body>
+</html>

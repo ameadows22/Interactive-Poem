@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Poem</title>
+  
+
+  <style> 
+  body {
+      background-color: #010003;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .custom-btn {
+      filter: blur(10px);
+      background-color: #05040400;
+      border: none; 
+    }
+    .custom-btn:hover {
+      &:hover {
+      filter: blur(0px);
+      transition: filter 2s ease;
+      }
+      background-color: #8166d900;
+      border: none;
+      cursor: pointer;
+    }
+</style>
+<body>
+    <button class="custom-btn" onclick="window.location.href='firststanza.html'">
+      <h1 style="color: #817676; font-size: 48px; font-family: 'American Typewriter', serif; text-align: center;">Hiraeth Memories</h1>
+    </button>
+
+    <script>
+      document.addEventListener('keydown', function(event) {
+        if (event.key === ' ') {
+          window.location.href = 'firststanza.html';
+        }
+      });
+    </script>
+</head>
+</html>
+
